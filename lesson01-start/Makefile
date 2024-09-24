@@ -5,7 +5,7 @@ CFLAGS=-c -D_LINUX -std=c++17 -g
 LDFLAGS=
 SOURCES=../core/src/IApplication_linux.cpp ../core/src/OpenGLRenderer.cpp ../core/src/Material.cpp ../core/src/Timer.cpp main.cpp TheApp.cpp misc.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=lesson01
+EXECUTABLE=app
 INCLUDE=
 LIBS =  -L /usr/X11R6/lib/ -lGL -lGLU -lX11 -lXi -lm
 all: $(SOURCES) $(EXECUTABLE)
