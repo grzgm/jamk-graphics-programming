@@ -3,6 +3,7 @@ build
 core
 core.zip
 lesson01-start.zip
+readme.txt
 */*.sln
 */*.vcxproj
 */*.vcxproj.filters
