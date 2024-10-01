@@ -48,38 +48,38 @@ bool TheApp::OnCreate()
 	// m_Quad[5] = VERTEX(-hw, -hw, 0.0f, 0.0f, 1.0f);
 
 	VERTEX whiteVertexTetrahedron = VERTEX(0.0f, 0.45f, 0.0f, 1.0f, 1.0f, 1.0f);
-	VERTEX greenVertexTetrahedron = VERTEX(-0.3f, -0.3f, 0.0f, 0.0f, 1.0f, 0.0f);
-	VERTEX blueVertexTetrahedron = VERTEX(0.3f, -0.3f, 0.0f, 0.0f, 0.0f, 1.0f);
-	VERTEX redVertexTetrahedron = VERTEX(0.0f, 0.0f, -0.6f, 1.0f, 0.0f, 0.0f);
+	VERTEX greenVertexTetrahedron = VERTEX(-0.4f, -0.3f, 0.3f, 0.0f, 1.0f, 0.0f);
+	VERTEX blueVertexTetrahedron = VERTEX(0.4f, -0.3f, 0.3f, 0.0f, 0.0f, 1.0f);
+	VERTEX redVertexTetrahedron = VERTEX(0.0f, -0.3f, -0.45f, 1.0f, 0.0f, 0.0f);
 	
 	m_Quad[0] = whiteVertexTetrahedron;
 	m_Quad[1] = blueVertexTetrahedron;
 	m_Quad[2] = greenVertexTetrahedron;
 	
 	m_Quad[3] = whiteVertexTetrahedron;
-	m_Quad[4] = redVertexTetrahedron;
-	m_Quad[5] = greenVertexTetrahedron;
+	m_Quad[4] = greenVertexTetrahedron;
+	m_Quad[5] = redVertexTetrahedron;
 	
 	m_Quad[6] = redVertexTetrahedron;
-	m_Quad[7] = whiteVertexTetrahedron;
-	m_Quad[8] = blueVertexTetrahedron;
+	m_Quad[7] = blueVertexTetrahedron;
+	m_Quad[8] = whiteVertexTetrahedron;
 	
 	m_Quad[9] = greenVertexTetrahedron;
-	m_Quad[10] =redVertexTetrahedron;
-	m_Quad[11] = blueVertexTetrahedron;
+	m_Quad[10] = blueVertexTetrahedron;
+	m_Quad[11] =redVertexTetrahedron;
 
 	
-	VERTEX redVertexTriangle = VERTEX(0.0f, 0.25f, 0.0f, 1.0f, 0.0f, 0.0f);
-	VERTEX greenVertexTriangle = VERTEX(-0.3f, -0.3f, 0.0f, 0.0f, 1.0f, 0.0f);
-	VERTEX blueVertexTriangle = VERTEX(0.3f, -0.3f, 0.0f, 0.0f, 0.0f, 1.0f);
+	// VERTEX redVertexTriangle = VERTEX(0.0f, 0.25f, 0.0f, 1.0f, 0.0f, 0.0f);
+	// VERTEX greenVertexTriangle = VERTEX(-0.3f, -0.3f, 0.0f, 0.0f, 1.0f, 0.0f);
+	// VERTEX blueVertexTriangle = VERTEX(0.3f, -0.3f, 0.0f, 0.0f, 0.0f, 1.0f);
 
-	m_Quad[12] = redVertexTriangle;
-	m_Quad[13] = blueVertexTriangle;
-	m_Quad[14] = greenVertexTriangle;
+	// m_Quad[12] = redVertexTriangle;
+	// m_Quad[13] = blueVertexTriangle;
+	// m_Quad[14] = greenVertexTriangle;
 
-	m_Quad[12].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
-	m_Quad[13].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
-	m_Quad[14].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+	// m_Quad[12].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+	// m_Quad[13].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
+	// m_Quad[14].Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.0f)));
 
 	// setup view and projection matrice
 	m_mView = glm::lookAt(
@@ -111,7 +111,7 @@ void TheApp::OnUpdate(float frametime)
 	// the main loop
 	// glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), -1.57079633f, glm::vec3(1.0f, 0.0f, 0.0f));
 	// rotation = glm::rotate(rotation, m_fAngle, glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), m_fAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 	// printMat(rotation);
 	m_fAngle += frametime;
 
@@ -123,19 +123,21 @@ void TheApp::OnUpdate(float frametime)
 
 	// m_mModel = glm::mat4(1.0f);
 	// m_mModel[3][1] = m_fX;
-	glm::mat4 translation(0.0f);
-	translation[3][0] = -1.5f;
-	translation[3][1] = -1.0f;
+	glm::mat4 translation(1.0f);
+	// translation[3][0] = -1.5f;
+	// translation[3][1] = -1.0f;
 
-	// m_mModel = translation * rotation;
+	m_mModel = translation * rotation;
 	// m_mModel = rotation;
-	m_mModel = glm::mat4(1.0f);
+	// m_mModel = glm::mat4(1.0f);
 
-	// m_mView[3][2] = -5.0f + sinf(m_fAngle) * 4.0f;
-	for (int i = 0; i < 15; i++)
-	{
-		m_Quad[i].Rotate(glm::rotate(glm::mat4(1.0f), 0.05f, glm::vec3(0.0f, 1.0f, 0.0f)));
-	}
+	m_mView[3][1] = 0.0f + sinf(m_fAngle) * 1.0f;
+	m_mView[3][0] = 0.0f + sinf(m_fAngle * 3) * 0.1f;
+
+	// for (int i = 0; i < 15; i++)
+	// {
+	// 	m_Quad[i].Rotate(glm::rotate(glm::mat4(1.0f), 0.05f, glm::vec3(0.0f, 1.0f, 0.0f)));
+	// }
 }
 
 void TheApp::OnDraw(IRenderer &renderer)
@@ -168,7 +170,7 @@ void TheApp::OnDraw(IRenderer &renderer)
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// draw quad
-	glDrawArrays(GL_TRIANGLES, 0, 15);
+	glDrawArrays(GL_TRIANGLES, 0, 12);
 }
 
 bool TheApp::OnKeyDown(uint32_t keyCode)
