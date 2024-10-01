@@ -12,6 +12,7 @@ all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ $(LIBS)
+	rm -f *.o
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $(INCLUDE) $@
