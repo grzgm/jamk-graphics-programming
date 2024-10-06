@@ -15,7 +15,9 @@
 TheApp::TheApp() :
 	m_uVertexShader(0),
 	m_uFragmentShader(0),
-	m_uProgram(0)
+	m_uProgram(0),
+	m_uTexture(0),
+	m_fRotationAngle(0.0f)
 {
 	// seed the random number generator
 	RandSeed();
@@ -29,7 +31,8 @@ bool TheApp::OnCreate()
 	m_uVertexShader = renderer->CreateVertexShaderFromFile("gouraudshader.vert");
 	m_uFragmentShader = renderer->CreateFragmentShaderFromFile("gouraudshader.frag");
 	m_uProgram = renderer->CreateProgram(m_uVertexShader, m_uFragmentShader);
-	if (!m_uVertexShader || !m_uFragmentShader || !m_uProgram)
+	m_uTexture = renderer->CreateTexture("earth.jpg");
+	if (!m_uVertexShader || !m_uFragmentShader || !m_uProgram || !m_uTexture)
 	{
 		return false;
 	}
@@ -45,6 +48,20 @@ bool TheApp::OnCreate()
 	GetRenderer()->SetViewMatrix(view);
 	GetRenderer()->SetProjectionMatrix(projection);
 
+	m_pShpere = std::make_shared<Geometry>();
+	m_pShpere->GenSphere(
+		glm::vec3(5.0f, 5.0f, 5.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		48,
+		48);
+
+	// m_pShpere->GenCube(
+	// 	glm::vec3(5.0f, 5.0f, 5.0f));
+
+	// m_pShpere->GenTorus(32, 3.0f, 1.0f);
+
+	// m_pShpere->GenKnot(128, 128, 3.0f);
+
 	return true;
 }
 
@@ -52,6 +69,7 @@ bool TheApp::OnCreate()
 void TheApp::OnDestroy()
 {
 	// app is about to close, clear all resources
+	glDeleteTextures(1, &m_uTexture);
 	glDeleteProgram(m_uProgram);
 	glDeleteShader(m_uFragmentShader);
 	glDeleteShader(m_uVertexShader);
@@ -65,6 +83,12 @@ void TheApp::OnDestroy()
 void TheApp::OnUpdate(float frametime)
 {
 	// the main loop
+	m_fRotationAngle += frametime * 0.5f;
+	while (m_fRotationAngle > glm::two_pi<float>())
+	{
+		m_fRotationAngle -= glm::two_pi<float>();
+	}
+	
 }
 
 
@@ -72,6 +96,27 @@ void TheApp::OnDraw(IRenderer& renderer)
 {
 	// clear depth and stencil buffers
 	renderer.Clear(0.2f, 0.2f, 0.2f, 1.0f);
+
+	auto ogl = GetOpenGLRenderer();
+
+	glUseProgram(m_uProgram);
+
+	glm::mat4 model(1.0f);
+	model = glm::rotate(model, m_fRotationAngle, glm::normalize(glm::vec3(0.4f, 0.5f, 0.0f)));
+	ogl->SetUniformMatrix4(m_uProgram, "modelMatrix", model);
+	ogl->SetUniformMatrix4(m_uProgram, "viewMatrix", renderer.GetViewMatrix());
+	ogl->SetUniformMatrix4(m_uProgram, "projectionMatrix", renderer.GetProjectionMatrix());
+
+	ogl->SetTexture(m_uProgram, m_uTexture, 0, "texture01");
+
+	// setup the light direction
+	const glm::vec3 lightDirection = glm::normalize(glm::vec3(1.0f, 0.0f, -0.5f));
+	ogl->SetUniformVec3(m_uProgram, "lightDirection", lightDirection);
+
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	m_pShpere->SetAttribs(m_uProgram);
+	m_pShpere->Draw(renderer);
 }
 
 

@@ -75,5 +75,11 @@ private:
 	GLuint						m_uVertexShader;
 	GLuint						m_uFragmentShader;
 	GLuint						m_uProgram;
+
+	GLuint						m_uTexture;
+
+	float						m_fRotationAngle;
+
+	std::shared_ptr<Geometry>	m_pShpere;
 };
 
