@@ -55,6 +55,14 @@ bool TheApp::OnCreate()
 		48,
 		48);
 
+	// set the material
+	m_pMaterial = std::make_shared<Material>();
+	m_pMaterial->m_cAmbient = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	m_pMaterial->m_cDiffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pMaterial->m_cEmissive = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+	m_pMaterial->m_cSpecular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pMaterial->m_fSpecularPower = 150.0f;
+
 	return true;
 }
 
@@ -103,10 +111,12 @@ void TheApp::OnDraw(IRenderer& renderer)
 	ogl->SetTexture(m_uProgram, m_uTexture, 0, "texture01");
 
 	// setup the light direction
-	const glm::vec3 lightDirection = glm::normalize(glm::vec3(1.0f, 0.0f, -0.5f));
+	const glm::vec3 lightDirection = glm::normalize(glm::vec3(0.0f, 0.0f, -1.5f));
 	ogl->SetUniformVec3(m_uProgram, "lightDirection", lightDirection);
 
 	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	m_pMaterial->SetToProgram(m_uProgram);
 
 	m_pShpere->SetAttribs(m_uProgram);
 	m_pShpere->Draw(renderer);

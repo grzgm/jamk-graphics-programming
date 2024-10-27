@@ -25,10 +25,10 @@ To compile the solutions run command `make` in the corresponding folder. Each so
 `assignment` folders contain solutions to the University's assignments.
 `lesson` folders contain lesson materials and free coding based on lesson content.
 
-* `lesson01` - coordinate system, vertex data structure, rendering quad, 3D space transformations, adjusting face colour, multicolour tetrahedron.
-* `lesson02` - scene graph.
-* `lesson03` - gouraud shading.
-* `lesson04` - 3D object materials.
+- `lesson01` - coordinate system, vertex data structure, rendering quad, 3D space transformations, adjusting face colour, multicolour tetrahedron.
+- `lesson02` - scene graph.
+- `lesson03` - gouraud shading.
+- `lesson04` - 3D object material colours: Ambient, Diffuse, Emissive, Specular.
 
-* `assignment-1` - rotating triangle with interpolated colours.
-* `assignment-2` - transparent texturing with UV coordinates.
+- `assignment-1` - rotating triangle with interpolated colours.
+- `assignment-2` - transparent texturing with UV coordinates.

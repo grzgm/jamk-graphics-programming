@@ -81,5 +81,6 @@ private:
 	float						m_fRotationAngle;
 
 	std::shared_ptr<Geometry>	m_pShpere;
+	std::shared_ptr<Material>	m_pMaterial;
 };
 
