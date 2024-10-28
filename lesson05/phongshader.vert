@@ -13,7 +13,8 @@ void main(void)
 {
 	vec4 vertexPosition = vec4(position, 1.0);
 	outUv = uv;
-	
+	eyespacePosition = (modelMatrix * vertexPosition).xyz;
+	eyespaceNormal = (modelMatrix * vec4(normal, 0.0)).xyz;	
 	gl_Position = modelViewProjectionMatrix * vertexPosition;
 }
 

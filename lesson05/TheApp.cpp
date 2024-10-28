@@ -48,6 +48,43 @@ bool TheApp::OnCreate()
 	GetRenderer()->SetViewMatrix(view);
 	GetRenderer()->SetProjectionMatrix(projection);
 
+	// generate geometry
+	constexpr float radius = 2.0f;
+	m_pGeometry = std::make_shared<Geometry>();
+	m_pGeometry->GenSphere(glm::vec3(radius));
+
+	// setup the material
+	m_pMaterial = std::make_shared<Material>();
+	m_pMaterial->m_cAmbient = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	m_pMaterial->m_cDiffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pMaterial->m_cEmissive = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	m_pMaterial->m_cSpecular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_pMaterial->m_fSpecularPower = 25.0f;
+
+	// build the scene
+	m_pSceneRoot = std::make_unique<Node>();
+
+	for (size_t i = 0; i < 25; i++)
+	{
+		auto node = std::make_shared<GeometryNode>(m_pGeometry, m_pMaterial);
+		node->SetTexture(0, m_uTexture);
+		node->SetRadius(radius);
+		node->SetPos(glm::vec3(glm::linearRand(-10.0f, 10.0f), 
+			glm::linearRand(-10.0f, 10.0f), 
+			glm::linearRand(-10.0f, 10.0f)));
+
+		const glm::vec3 axis(glm::linearRand(-1.0f, 1.0f),
+			glm::linearRand(-1.0f, 1.0f),
+			glm::linearRand(-1.0f, 1.0f));
+
+		node->SetRotationAxis(glm::normalize(axis));
+		node->SetRotationSpeed(glm::linearRand(-3.0f, 3.0f));
+
+		// add new node to the scene
+		m_pSceneRoot->AddNode(node);
+	}
+	
+
 	return true;
 }
 
@@ -55,6 +92,8 @@ bool TheApp::OnCreate()
 void TheApp::OnDestroy()
 {
 	// app is about to close, clear all resources
+	m_pSceneRoot = nullptr;
+	
 	glDeleteTextures(1, &m_uTexture);
 	glDeleteProgram(m_uProgram);
 	glDeleteShader(m_uFragmentShader);
@@ -69,6 +108,9 @@ void TheApp::OnDestroy()
 
 void TheApp::OnUpdate(float frametime)
 {
+	if (m_pSceneRoot){
+		m_pSceneRoot->Update(frametime);
+	}
 }
 
 
@@ -79,6 +121,20 @@ void TheApp::OnDraw(IRenderer& renderer)
 
 	// activate program
 	glUseProgram(m_uProgram);
+
+	// setup the light direction
+	const glm::vec3 lightDirection(glm::normalize(glm::vec3(1.0f, 0.1f, -1.0f)));
+	OpenGLRenderer::SetUniformVec3(m_uProgram, "lightDirection", lightDirection);
+
+	// setup the camera position
+	const glm::vec3 campos(-renderer.GetViewMatrix()[3]);
+	OpenGLRenderer::SetUniformVec3(m_uProgram, "cameraPosition", campos);
+
+	// render the scene
+	if (m_pSceneRoot)
+	{
+		m_pSceneRoot->Render(renderer, m_uProgram);
+	}
 }
 
 

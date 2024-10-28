@@ -82,5 +82,10 @@ private:
 	GLuint						m_uProgram;
 
 	GLuint						m_uTexture;
+
+	std::shared_ptr<Geometry>	m_pGeometry;
+	std::shared_ptr<Material>	m_pMaterial;
+
+	std::unique_ptr<Node>		m_pSceneRoot;
 };
 
