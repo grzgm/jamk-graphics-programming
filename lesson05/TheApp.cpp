@@ -80,6 +80,10 @@ bool TheApp::OnCreate()
 		node->SetRotationAxis(glm::normalize(axis));
 		node->SetRotationSpeed(glm::linearRand(-3.0f, 3.0f));
 
+		node->SetVelocity(glm::vec3(glm::linearRand(-10.0f, 10.0f),
+			glm::linearRand(-10.0f, 10.0f),
+			glm::linearRand(-10.0f, 10.0f)));
+
 		// add new node to the scene
 		m_pSceneRoot->AddNode(node);
 	}
@@ -110,6 +114,8 @@ void TheApp::OnUpdate(float frametime)
 {
 	if (m_pSceneRoot){
 		m_pSceneRoot->Update(frametime);
+		CheckMovementLimits();
+		CheckSphereToSphereCollisions();
 	}
 }
 
@@ -150,3 +156,106 @@ bool TheApp::OnKeyDown(uint32_t keyCode)
 	return false;
 }
 
+void TheApp::CheckMovementLimits()
+{
+	constexpr float limit = 10.0f;
+	const auto& nodes = m_pSceneRoot->GetNodes();
+	for (auto& node : nodes)
+	{
+		auto pos = node->GetPos();
+		auto& velocity = node->GetVelocity();
+
+		if (pos.x > limit)
+		{
+			pos.x = limit;
+			velocity.x = -velocity.x;
+		}
+		if (pos.x < -limit)
+		{
+			pos.x = -limit;
+			velocity.x = -velocity.x;
+		}
+
+		if (pos.y > limit)
+		{
+			pos.y = limit;
+			velocity.y = -velocity.y;
+		}
+		if (pos.y < -limit)
+		{
+			pos.y = -limit;
+			velocity.y = -velocity.y;
+		}
+
+		if (pos.z > limit)
+		{
+			pos.z = limit;
+			velocity.z = -velocity.z;
+		}
+		if (pos.z < -limit)
+		{
+			pos.z = -limit;
+			velocity.z = -velocity.z;
+		}
+
+		node->SetPos(pos);
+	}
+}
+
+
+void TheApp::CheckSphereToSphereCollisions()
+{
+	const auto& nodes = m_pSceneRoot->GetNodes();
+
+	for (auto& node1 : nodes)
+	{
+		for (auto& node2 : nodes)
+		{
+			if (node1 != node2)
+			{
+				glm::vec3 pos1 = node1->GetPos();
+				glm::vec3 pos2 = node2->GetPos();
+				glm::vec3 d(pos2 - pos1);
+
+				const float len = glm::length(d);
+				const float r = node1->GetRadius() + node2->GetRadius();
+
+				if (len < r)
+				{
+					// spheres intercect
+
+					// calculate how much object intersect
+					const float inside = (r - len) * 1.01f;
+
+					d = glm::normalize(d);
+					pos1 += d * -inside * 0.5f;
+					pos2 += d * inside * 0.5f;
+
+					node1->SetPos(pos1);
+					node2->SetPos(pos2);
+
+					// rest of the collision response from gamasutra article:
+					// http://www.gamasutra.com/view/feature/131424/pool_hall_lessons_fast_accurate.php
+					constexpr float mass1 = 1.0f;
+					constexpr float mass2 = 1.0f;
+
+					glm::vec3 v1 = node1->GetVelocity();
+					glm::vec3 v2 = node2->GetVelocity();
+
+					float a1 = glm::dot(v1, d);
+					float a2 = glm::dot(v2, d);
+
+					float optP = (2.0f * (a1- a2)) / (mass1 + mass2);
+					v1 = v1 - optP * mass2 * d;
+					v2 = v2 + optP * mass1 * d;
+
+					node1->SetVelocity(v1);
+					node2->SetVelocity(v2);
+
+					node1->SetRotationSpeed(glm::linearRand(-3.0f, 3.0f));
+					node2->SetRotationSpeed(glm::linearRand(-3.0f, 3.0f));
+				}
+			}
+		}
+	}
+}

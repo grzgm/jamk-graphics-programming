@@ -29,7 +29,7 @@ To compile the solutions run command `make` in the corresponding folder. Each so
 - `lesson02` - scene graph.
 - `lesson03` - gouraud shading.
 - `lesson04` - 3D object material colours: Ambient, Diffuse, Emissive, Specular.
-- `lesson05` - lighting with phong shading.
+- `lesson05` - lighting with phong shading, collision system.
 
 - `assignment-1` - rotating triangle with interpolated colours.
 - `assignment-2` - transparent texturing with UV coordinates.
