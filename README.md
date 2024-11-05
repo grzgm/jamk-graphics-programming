@@ -33,3 +33,4 @@ To compile the solutions run command `make` in the corresponding folder. Each so
 
 - `assignment-1` - rotating triangle with interpolated colours.
 - `assignment-2` - transparent texturing with UV coordinates.
+- `assignment-3` - parenting objects with scenegraph and transformations based on the local coordinates from Model Matrix.
