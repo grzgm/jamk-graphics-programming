@@ -15,7 +15,8 @@
 TheApp::TheApp() :
 	m_uVertexShader(0),
 	m_uFragmentShader(0),
-	m_uProgram(0)
+	m_uProgram(0),
+	m_fUvOffset(0)
 {
 	// seed the random number generator
 	RandSeed();
@@ -32,6 +33,16 @@ bool TheApp::OnCreate()
 	if (!m_uVertexShader || !m_uFragmentShader || !m_uProgram)
 	{
 		return false;
+	}
+
+	m_arrTextures.push_back(renderer->CreateTexture("earth.jpg"));
+	m_arrTextures.push_back(renderer->CreateTexture("earth_specular.jpg"));
+	m_arrTextures.push_back(renderer->CreateTexture("hex.jpg"));
+	m_arrTextures.push_back(renderer->CreateTexture("clouds.jpg"));
+
+	for (const auto texture : m_arrTextures)
+	{
+		if (!texture) return false;
 	}
 
 	// setup our view and projection matrices
@@ -62,15 +73,20 @@ bool TheApp::OnCreate()
 
 	// spawn a cube
 	auto cube = std::make_shared<GeometryNode>(m_pCube, nullptr);
-	cube->SetTextureWrapModes({ GL_CLAMP_TO_EDGE, GL_REPEAT, GL_REPEAT, GL_REPEAT });
-
+	cube->SetTexture(0, m_arrTextures[0]);
+	cube->SetTexture(1, m_arrTextures[1]);
+	cube->SetTexture(2, m_arrTextures[2]);
+	cube->SetTextureWrapModes({GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_REPEAT, GL_REPEAT});
 	cube->SetName("cube");
 	cube->SetPos(-2.5f, 0.0f, 0.0f);
 	m_pSceneRoot->AddNode(cube);
 
 	// spawn a sphere
 	auto sphere = std::make_shared<GeometryNode>(m_pSphere, nullptr);
-	sphere->SetTextureWrapModes({ GL_CLAMP_TO_EDGE, GL_REPEAT, GL_REPEAT, GL_REPEAT });
+	sphere->SetTexture(0, m_arrTextures[0]);
+	sphere->SetTexture(1, m_arrTextures[1]);
+	sphere->SetTexture(2, m_arrTextures[3]);
+	sphere->SetTextureWrapModes({GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE, GL_REPEAT, GL_REPEAT});
 	sphere->SetName("sphere");
 	sphere->SetPos(2.5f, 0.0f, 0.0f);
 	m_pSceneRoot->AddNode(sphere);
@@ -97,6 +113,9 @@ void TheApp::OnDestroy()
 	// app is about to close, clear all resources
 	m_pSceneRoot = nullptr;
 
+	glDeleteTextures((GLsizei)m_arrTextures.size(), m_arrTextures.data());
+	m_arrTextures.clear();
+
 	glDeleteProgram(m_uProgram);
 	glDeleteShader(m_uFragmentShader);
 	glDeleteShader(m_uVertexShader);
@@ -113,6 +132,10 @@ void TheApp::OnUpdate(float frametime)
 	{
 		m_pSceneRoot->Update(frametime);
 	}
+
+	// animate the uv offset
+	m_fUvOffset += 0.1f * frametime;
+	if (m_fUvOffset > 1.0f) m_fUvOffset -= 1.0f;
 }
 
 
@@ -123,6 +146,8 @@ void TheApp::OnDraw(IRenderer& renderer)
 
 	// activate our program
 	glUseProgram(m_uProgram);
+
+	OpenGLRenderer::SetUniformFloat(m_uProgram, "uvOffset", m_fUvOffset);
 
 	// setup the light direction
 	const glm::vec3 lightDir(0.0f, 0.0f, -1.0f);

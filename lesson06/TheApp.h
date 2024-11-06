@@ -79,10 +79,14 @@ private:
 	GLuint						m_uFragmentShader;
 	GLuint						m_uProgram;
 
+	std::vector<GLuint>			m_arrTextures;
+
 	std::shared_ptr<Geometry>	m_pCube;
 	std::shared_ptr<Geometry>	m_pSphere;
 	std::shared_ptr<Material>	m_pMaterial;
 
 	std::unique_ptr<Node>		m_pSceneRoot;
+
+	float						m_fUvOffset;
 };
 
