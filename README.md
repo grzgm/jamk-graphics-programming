@@ -31,6 +31,7 @@ To compile the solutions run command `make` in the corresponding folder. Each so
 - `lesson04` - 3D object material colours: Ambient, Diffuse, Emissive, Specular.
 - `lesson05` - lighting with phong shading, collision system.
 - `lesson06` - multitexturing.
+- `lesson07` - blending.
 
 - `assignment-1` - rotating triangle with interpolated colours.
 - `assignment-2` - transparent texturing with UV coordinates.
